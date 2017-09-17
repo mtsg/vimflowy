@@ -25,6 +25,7 @@ async function main(args: any) {
 
           --test: For dev mode only.  Specifies whether to run unit tests upon code change.
 
+          --address: Address of socket server.  
           --db $dbtype: If a db is set, we will additionally run a socket server.
             Available options:
             - 'sqlite' to use sqlite backend
@@ -61,7 +62,9 @@ async function main(args: any) {
         password: args.password,
         path: '/socket',
       };
-      makeSocketServer(server, options);
+      makeSocketServer(
+        server, 
+        args.address || ('ws://localhost:' + port), options);
     }
     server.listen(port, 'localhost', (err: Error) => {
       if (err) { return logger.error(err); }
@@ -84,11 +87,15 @@ async function main(args: any) {
         dbfolder: args.dbfolder,
         password: args.password,
       };
-      makeSocketServer(server, options);
+      makeSocketServer(server, args.address, options);
       server.listen(wsPort, 'localhost', (err: Error) => {
         if (err) { return logger.error(err); }
         logger.info('Internal server listening on %d', server.address().port);
       });
+    } else {
+      if (args.address) {
+        logger.warn('Address ignored: %s', args.address);
+      }
     }
     makeDevServer(port, webpack_options);
     if (args.test) {

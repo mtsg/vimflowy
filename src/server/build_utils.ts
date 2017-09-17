@@ -6,17 +6,17 @@ import logger from '../assets/ts/utils/logger';
 
 import { getProdConfig, getDevConfig, staticDir, publicPath } from './webpack_configs';
 
-export async function buildProd() {
+export async function buildProd(socketServerAddress: null | string = null) {
   await new Promise((resolve, reject) => {
-    webpack(getProdConfig(), function(err) {
+    webpack(getProdConfig(socketServerAddress), function(err) {
       if (err) { return reject(err); }
       resolve();
     });
   });
 }
 
-export function makeDevServer(port: number, extraConf: any = {}) {
-  const server = new WebpackDevServer(webpack(getDevConfig()), {
+export function makeDevServer(port: number, socketServerAddress: null | string = null, extraConf: any = {}) {
+  const server = new WebpackDevServer(webpack(getDevConfig(socketServerAddress)), {
     publicPath: publicPath,
     hot: true,
     stats: false,

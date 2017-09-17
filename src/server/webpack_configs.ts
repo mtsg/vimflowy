@@ -1,5 +1,4 @@
 import * as path from 'path';
-
 import * as webpack from 'webpack';
 
 const SRC_DIR = path.join(__dirname, '../../src');
@@ -8,7 +7,7 @@ export const staticDir = path.join(__dirname, '../../', 'static');
 export const publicPath = '/build/';
 export const buildDir = path.join(staticDir, 'build');
 
-export function getDevConfig(): webpack.Configuration {
+export function getDevConfig(socketServerAddress: null | string = null): webpack.Configuration {
   return {
     devtool: 'eval',
     entry: [
@@ -46,6 +45,7 @@ export function getDevConfig(): webpack.Configuration {
         'process.env': {
           'NODE_ENV': JSON.stringify('development')
         },
+        'socketServerAddress': JSON.stringify(socketServerAddress),
       }),
       new webpack.LoaderOptionsPlugin({
         options: {
@@ -67,7 +67,7 @@ export function getDevConfig(): webpack.Configuration {
   };
 };
 
-export function getProdConfig(): webpack.Configuration {
+export function getProdConfig(socketServerAddress: null | string = null): webpack.Configuration {
   return {
     devtool: 'source-map',
     entry: `${SRC_DIR}/assets/ts/app.tsx`,
@@ -100,6 +100,7 @@ export function getProdConfig(): webpack.Configuration {
         'process.env': {
           'NODE_ENV': JSON.stringify('production')
         },
+        'socketServerAddress': JSON.stringify(socketServerAddress),
       }),
       new webpack.optimize.UglifyJsPlugin({
         compress: {

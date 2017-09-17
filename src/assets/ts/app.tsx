@@ -49,6 +49,9 @@ import AppComponent, { TextMessage } from './components/app';
 
 declare const window: any; // because we attach globals for debugging
 
+// available through webpack definitions
+declare const socketServerAddress: string | null;
+
 const appEl = $('#app')[0];
 
 ReactDOM.render(
@@ -108,7 +111,11 @@ $(document).ready(async () => {
     backend_type = 'inmemory';
   } else {
     clientStore = new ClientStore(new SynchronousLocalStorageBackend(), docname);
-    backend_type = clientStore.getDocSetting('dataSource');
+    if (socketServerAddress != null) {
+      backend_type = 'socketserver';
+    } else {
+      backend_type = clientStore.getDocSetting('dataSource');
+    }
   }
 
   const config: Config = vimConfig;
@@ -146,9 +153,21 @@ $(document).ready(async () => {
   } else if (backend_type === 'inmemory') {
     docStore = new DocumentStore(new InMemory());
   } else if (backend_type === 'socketserver') {
-    const socketServerHost = clientStore.getDocSetting('socketServerHost');
+    let socketServerHost;
+    let socketServerDocument;
+    // TODO: a bit hacky?  do a better way
+    if (socketServerAddress) { // server is fixed!
+      socketServerHost = socketServerAddress;
+      socketServerDocument = docname;
+      clientStore.setDocSetting('socketServerHost', socketServerHost);
+      clientStore.getDocSetting('socketServerDocument');
+      // TODO: in the case where there is a password needed, 
+      // we need some way to get it here...
+    } else {
+      socketServerHost = clientStore.getDocSetting('socketServerHost');
+      socketServerDocument = clientStore.getDocSetting('socketServerDocument');
+    }
     const socketServerPassword = clientStore.getDocSetting('socketServerPassword');
-    const socketServerDocument = clientStore.getDocSetting('socketServerDocument');
 
     try {
       if (!socketServerHost) {
