@@ -2,6 +2,9 @@
 import TestCase from '../testcase';
 
 describe('collapse', () => {
+  /**
+   * z key is for collapsing element.
+   */
   it('works in basic case', async function () {
     let t = new TestCase([
       {
@@ -41,6 +44,10 @@ describe('collapse', () => {
     await t.done();
   });
 
+  /**
+   * ctrl+z cannot undo collapse state of element.
+   * meta+up can collapse element.
+   */
   it('open and close work in insert mode', async function () {
     let t = new TestCase([
       {
