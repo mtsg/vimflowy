@@ -55,7 +55,8 @@ describe('enter', function () {
 
   it('does not mess up registers', async function () {
     let t = new TestCase(['']);
-    t.setRegister({ type: RegisterTypes.CHARS, saved: ['unchanged'] });
+    t.setRegister({ type: RegisterTypes.CHARS, saved: ['hoge'] });
+    t.sendKey('p');
     t.sendKey('i');
     t.sendKeys('helloworld');
     for (let i = 0; i < 5; i++) {
@@ -63,8 +64,12 @@ describe('enter', function () {
     }
     t.sendKey('enter');
     t.sendKey('esc');
-    t.expect(['hello', 'world']);
-    t.expectRegister({ type: RegisterTypes.CHARS, saved: ['unchanged'] });
+    t.expect(['hogehello', 'world']);
+    t.expectRegister({ type: RegisterTypes.CHARS, saved: ['hoge'] });
+    t.sendKeys('yy');
+    t.expectRegister({
+      type: RegisterTypes.SERIALIZED_ROWS, saved: [{ text: 'world' }]
+    });
     await t.done();
   });
 
@@ -147,6 +152,9 @@ describe('enter', function () {
     await t.done();
   });
 
+  /**
+   * Last part remain as id part when a line contining id splitted into 2 parts.
+   */
   it('doesnt preserve identity in the middle of a line', async function () {
     let t = new TestCase([
       { text: 'hey', id: 1 },
