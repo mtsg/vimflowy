@@ -3,4 +3,4 @@
 --watch-extensions tsx,ts
 --timeout 60000
 --reporter mochawesome
-test/tests/*.ts 
+test/tests/private/*.ts 
