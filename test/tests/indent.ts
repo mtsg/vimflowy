@@ -162,37 +162,7 @@ describe('block indent/unindent', function () {
     await t.done();
   });
 
-  it('works with something with children', async function () {
-    let t = new TestCase([
-      {
-        text: '1', collapsed: true, children: [
-          '2',
-        ]
-      },
-      {
-        text: '3', children: [
-          '4',
-        ]
-      },
-    ]);
-    t.sendKeys('j');
-    t.sendKey(indentBlockKey);
-    t.expect([
-      {
-        text: '1', children: [
-          '2',
-          {
-            text: '3', children: [
-              '4',
-            ]
-          },
-        ]
-      },
-    ]);
-    await t.done();
-  });
-
-  it('works with numbers', async function () {
+  it('indent with 2 means indent 2 lines sametime', async function () {
     let t = new TestCase([
       {
         text: 'mama', children: [
