@@ -195,7 +195,7 @@ class TestCase {
     });
   }
 
-  public expectJumpIndex(index: number, historyLength: number | null = null) {
+  public expectJumpIndex(index: number, historyLength: number | null = null): this {
     return this._chain(() => {
       this._expectEqual(this.session.jumpIndex, index,
         'Unexpected jump index');
@@ -206,7 +206,7 @@ class TestCase {
     });
   }
 
-  public expectNumMenuResults(num_results: number) {
+  public expectNumMenuResults(num_results: number): this {
     return this._chain(() => {
       if (this.session.menu === null) {
         throw new Error('Menu was null while expecting menu results');
@@ -221,21 +221,21 @@ class TestCase {
     return this;
   }
 
-  public expectRegister(expected: SerializedRegister) {
+  public expectRegister(expected: SerializedRegister): this {
     return this._chain(() => {
       let current = this.register.serialize();
       this._expectDeepEqual(current, expected, 'Unexpected register content');
     });
   }
 
-  public expectRegisterType(expected: RegisterTypes) {
+  public expectRegisterType(expected: RegisterTypes): this {
     return this._chain(() => {
       let current = this.register.serialize();
       this._expectDeepEqual(current.type, expected, 'Unexpected register type');
     });
   }
 
-  public expectExport(mimeType: string, expected: string) {
+  public expectExport(mimeType: string, expected: string): this {
     return this._chain(async () => {
       let content = await this.session.exportContent(mimeType);
       this._expectEqual(content, expected, 'Unexpected export content');
